@@ -3,9 +3,13 @@ import { LoginButton } from '../components/commons/LoginButton';
 
 const Home: NextPage = () => {
   return (
-    <>
-      <LoginButton />
-    </>
+    <article className="prose">
+      <h1>Hello World</h1>
+      <p>This is a NextJS demo</p>
+      <p>
+        <LoginButton />
+      </p>
+    </article>
   );
 };
 
