@@ -3,7 +3,7 @@
 ## Install
 
 ```
-npx degit m0o0scar/nextjs-template my-project
+npx degit m0o0scar/nextjs-template#vr my-project
 cd my-project
 
 yarn
