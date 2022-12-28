@@ -21,7 +21,10 @@ export const LoginButton = () => {
           <label tabIndex={0} className="btn m-1">
             Hello {session.user?.name}
           </label>
-          <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-32">
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-32"
+          >
             <li>
               <a onClick={() => signOut()}>Logout</a>
             </li>
