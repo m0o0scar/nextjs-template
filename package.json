@@ -12,7 +12,7 @@
     "@tailwindcss/typography": "^0.5.8",
     "daisyui": "^2.42.1",
     "next": "^13.0.6",
-    "next-auth": "^4.18.4",
+    "next-auth": "^4.20.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
