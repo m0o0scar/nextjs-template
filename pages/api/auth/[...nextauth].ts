@@ -72,8 +72,7 @@ export const authOptions: NextAuthOptions = {
           prompt: 'consent',
           access_type: 'offline',
           response_type: 'code',
-          scope:
-            'email profile https://www.googleapis.com/auth/photoslibrary.readonly',
+          scope: 'email profile https://www.googleapis.com/auth/photoslibrary.readonly',
         },
       },
     }),
@@ -100,7 +99,7 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token, user }) {
       // Send properties to the client, like an access_token from a provider.
-      session.accessToken = token.accessToken;
+      Object.assign(session, { accessToken: token.accessToken });
       return session;
     },
   },
