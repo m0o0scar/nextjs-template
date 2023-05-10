@@ -4,6 +4,11 @@ import GoogleProvider from 'next-auth/providers/google';
 
 const { GOOGLE_CLIENT_ID = '', GOOGLE_CLIENT_SECRET = '' } = process.env;
 
+const scopes = [
+  'https://www.googleapis.com/auth/userinfo.email',
+  'https://www.googleapis.com/auth/userinfo.profile',
+];
+
 interface Tokens {
   access_token?: string;
   refresh_token?: string;
@@ -72,14 +77,21 @@ export const authOptions: NextAuthOptions = {
           prompt: 'consent',
           access_type: 'offline',
           response_type: 'code',
-          scope: 'email profile https://www.googleapis.com/auth/photoslibrary.readonly',
+          scope: scopes.join(' '),
         },
       },
     }),
   ],
+
   callbacks: {
     async jwt({ token, account }) {
-      // Initial sign in
+      // Include granted scopes to be available in the client,
+      // so that later in session callback, we can determine if user has granted us the required scopes
+      if (account?.scope) {
+        token.scope = account.scope;
+      }
+
+      // Allow client to access the access token
       if (account?.access_token) {
         const { accessToken, refreshToken, expires } = parseTokens(account);
         token.accessToken = accessToken;
@@ -97,9 +109,21 @@ export const authOptions: NextAuthOptions = {
       const newToken = await refreshAccessToken(token);
       return newToken;
     },
+
     async session({ session, token, user }) {
+      const { accessToken = '', scope = '' } = token as { accessToken?: string; scope?: string };
+
+      // Make sure user has granted us all the required scopes, otherwise login should fail
+      const grantedScopes = scope.split(' ');
+      const hasRequiredScopes = scopes.every((requiredScope) =>
+        grantedScopes.includes(requiredScope)
+      );
+      if (!hasRequiredScopes) {
+        throw new Error('Access denied: required scope not granted');
+      }
+
       // Send properties to the client, like an access_token from a provider.
-      Object.assign(session, { accessToken: token.accessToken });
+      Object.assign(session, { accessToken });
       return session;
     },
   },
