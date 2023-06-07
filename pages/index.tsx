@@ -1,15 +1,14 @@
-import type { NextPage } from 'next';
 import { useSession } from 'next-auth/react';
 
 import { Header } from '@components/commons/Header';
 
 import { LoginButton } from '../components/commons/LoginButton';
 
-const Home: NextPage = () => {
+export default function Page() {
   const { status } = useSession();
   return (
     <>
-      <Header />
+      <Header title="Hello World" emoji="😎" />
 
       {/* page container */}
       <article className="prose max-w-full">
@@ -59,6 +58,4 @@ const Home: NextPage = () => {
       </article>
     </>
   );
-};
-
-export default Home;
+}
