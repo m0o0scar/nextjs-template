@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 
 import { Header } from '@components/commons/Header';
-import GearIcon from '@components/icons/cog-6-tooth-solid.svg';
+import { Cog6ToothIcon } from '@heroicons/react/24/solid';
 
 import { LoginButton } from '../components/commons/LoginButton';
 
@@ -28,7 +28,7 @@ export default function Page() {
                     htmlFor="settings-drawer"
                     className="btn btn-circle btn-ghost btn-active btn-sm fixed right-4 top-4 p-1"
                   >
-                    <GearIcon />
+                    <Cog6ToothIcon />
                   </label>
                   <div>Hi</div>
                 </>
