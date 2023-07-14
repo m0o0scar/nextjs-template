@@ -48,7 +48,7 @@ export default function Page() {
           {/* drawer */}
           <div className="drawer-side">
             <label htmlFor="settings-drawer" className="drawer-overlay"></label>
-            <div className="p-4 w-80 bg-base-100 text-base-content flex flex-col">
+            <div className="p-4 w-80 h-full bg-base-100 text-base-content flex flex-col">
               <h1>⚙️ Settings</h1>
               <div className="grow">{/* drawer content goes here */}</div>
               <LoginButton />
