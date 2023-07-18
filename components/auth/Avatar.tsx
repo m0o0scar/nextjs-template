@@ -26,7 +26,12 @@ export const Avatar: FC<AvatarProps> = ({ className, ...props }) => {
     >
       {status === 'authenticated' && imgLoadFailed && <span>{label}</span>}
       {status === 'authenticated' && !imgLoadFailed && (
-        <img alt="avatar" src={data.user?.image!} onError={() => setImgLoadFailed(true)} />
+        <img
+          alt="avatar"
+          src={data.user?.image!}
+          onError={() => setImgLoadFailed(true)}
+          referrerPolicy="no-referrer"
+        />
       )}
     </div>
   );
