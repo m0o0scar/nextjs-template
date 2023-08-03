@@ -1,5 +1,5 @@
 import { Header } from '@components/commons/Header';
-import { Navbar } from '@components/commons/Navbar';
+import { NavMenu } from '@components/commons/NavMenu';
 
 export default function Page() {
   return (
@@ -8,7 +8,7 @@ export default function Page() {
 
       {/* page container */}
       <article className="prose max-w-full w-screen h-screen flex flex-col">
-        <Navbar />
+        <NavMenu />
         <div className="flex-1 p-4">Hello World</div>
       </article>
     </>
