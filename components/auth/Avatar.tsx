@@ -18,7 +18,7 @@ export const Avatar: FC<AvatarProps> = ({ className, ...props }) => {
   return (
     <div
       className={cls(
-        'avatar not-prose w-8 h-8 rounded-full bg-neutral-200 text-neutral-700',
+        'avatar not-prose w-8 h-8 rounded-full overflow-hidden bg-neutral-200 text-neutral-700',
         { placeholder },
         className,
       )}
