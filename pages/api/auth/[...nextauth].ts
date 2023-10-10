@@ -9,6 +9,9 @@ const scopes = [
   'https://www.googleapis.com/auth/userinfo.profile',
 ];
 
+const whitelistUsers = process.env.AUTH_WHITELIST_USERS?.split(',') || [];
+const whitelistDomains = process.env.AUTH_WHITELIST_DOMAINS?.split(',') || [];
+
 interface Tokens {
   access_token?: string;
   refresh_token?: string;
@@ -84,6 +87,17 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
+    async signIn({ user, account, profile, email, credentials }) {
+      if (!user.email || !account?.scope) return false;
+
+      const isWhitelistUser = !whitelistUsers.length || whitelistUsers.includes(user.email);
+      const isWhitelistDomain =
+        !whitelistDomains.length || whitelistDomains.includes(user.email.split('@')[1]);
+      if (!isWhitelistUser && !isWhitelistDomain) return false;
+
+      return true;
+    },
+
     async jwt({ token, account }) {
       // Include granted scopes to be available in the client,
       // so that later in session callback, we can determine if user has granted us the required scopes
@@ -116,7 +130,7 @@ export const authOptions: NextAuthOptions = {
       // Make sure user has granted us all the required scopes, otherwise login should fail
       const grantedScopes = scope.split(' ');
       const hasRequiredScopes = scopes.every((requiredScope) =>
-        grantedScopes.includes(requiredScope)
+        grantedScopes.includes(requiredScope),
       );
       if (!hasRequiredScopes) {
         throw new Error('Access denied: required scope not granted');
