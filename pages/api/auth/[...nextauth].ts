@@ -2,15 +2,14 @@ import NextAuth, { NextAuthOptions } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import GoogleProvider from 'next-auth/providers/google';
 
+const whitelistUsers = process.env.AUTH_WHITELIST_USERS?.split(',') || undefined;
+const whitelistDomains = process.env.AUTH_WHITELIST_DOMAINS?.split(',') || undefined;
 const { GOOGLE_CLIENT_ID = '', GOOGLE_CLIENT_SECRET = '' } = process.env;
 
 const scopes = [
   'https://www.googleapis.com/auth/userinfo.email',
   'https://www.googleapis.com/auth/userinfo.profile',
 ];
-
-const whitelistUsers = process.env.AUTH_WHITELIST_USERS?.split(',') || [];
-const whitelistDomains = process.env.AUTH_WHITELIST_DOMAINS?.split(',') || [];
 
 interface Tokens {
   access_token?: string;
@@ -90,12 +89,11 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account, profile, email, credentials }) {
       if (!user.email || !account?.scope) return false;
 
-      const isWhitelistUser = !whitelistUsers.length || whitelistUsers.includes(user.email);
-      const isWhitelistDomain =
-        !whitelistDomains.length || whitelistDomains.includes(user.email.split('@')[1]);
-      if (!isWhitelistUser && !isWhitelistDomain) return false;
-
-      return true;
+      const domain = user.email.split('@')[1];
+      const noWhitelist = whitelistUsers === undefined && whitelistDomains === undefined;
+      const isWhitelistUser = whitelistUsers !== undefined && whitelistUsers.includes(user.email);
+      const isWhitelistDomain = whitelistDomains !== undefined && whitelistDomains.includes(domain);
+      return noWhitelist || isWhitelistUser || isWhitelistDomain;
     },
 
     async jwt({ token, account }) {
