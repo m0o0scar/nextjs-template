@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import NextAuth, { NextAuthOptions, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import GoogleProvider from 'next-auth/providers/google';
 
@@ -16,6 +16,12 @@ interface Tokens {
   refresh_token?: string;
   expires_in?: number;
   expires_at?: number;
+}
+
+export interface SessionWithTokens extends Session {
+  accessToken: string;
+  refreshToken: string;
+  scope: string;
 }
 
 function parseTokens(tokens: Tokens) {
@@ -123,7 +129,11 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token, user }) {
-      const { accessToken = '', scope = '' } = token as { accessToken?: string; scope?: string };
+      const {
+        accessToken = '',
+        refreshToken = '',
+        scope = '',
+      } = token as { accessToken?: string; refreshToken?: string; scope?: string };
 
       // Make sure user has granted us all the required scopes, otherwise login should fail
       const grantedScopes = scope.split(' ');
@@ -135,8 +145,8 @@ export const authOptions: NextAuthOptions = {
       }
 
       // Send properties to the client, like an access_token from a provider.
-      Object.assign(session, { accessToken });
-      return session;
+      Object.assign(session, { accessToken, refreshToken });
+      return session as SessionWithTokens;
     },
   },
 };
