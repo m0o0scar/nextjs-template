@@ -6,6 +6,6 @@
 npx degit m0o0scar/nextjs-template my-project
 cd my-project
 
-yarn
-yarn dev
+npm i
+npm run dev
 ```
