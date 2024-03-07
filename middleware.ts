@@ -9,6 +9,30 @@ export const config = {
 };
 
 async function middleware(request: NextRequestWithAuth, event: NextFetchEvent) {
+  const url = new URL(request.url);
+
+  if (url.pathname.startsWith('/api/proxy/')) {
+    const [, _api, _proxy, service, ...path] = url.pathname.split('/');
+    switch (service) {
+      case 'openai': {
+        const headers = new Headers(request.headers);
+        headers.set(`Authorization`, `Bearer ${process.env.OPENAI_API_TOKEN}`);
+        const destination = `https://api.openai.com/v1/${path.join('/')}?${url.searchParams.toString()}`;
+        return NextResponse.rewrite(destination, { headers });
+      }
+
+      case 'anthropic': {
+        const headers = new Headers(request.headers);
+        headers.set(`x-api-key`, process.env.ANTHROPIC_API_TOKEN!);
+        const destination = `https://api.anthropic.com/${path.join('/')}?${url.searchParams.toString()}`;
+        return NextResponse.rewrite(destination, { headers });
+      }
+
+      default:
+        break;
+    }
+  }
+
   return NextResponse.next();
 }
 
