@@ -19,7 +19,7 @@ export const NavMenu = () => {
             tabIndex={0}
             className="mt-1 z-[1] p-2 shadow menu dropdown-content bg-base-100 rounded-xl"
           >
-            <li>
+            {/* <li>
               <a className="justify-between">
                 Profile
                 <span className="badge">New</span>
@@ -27,7 +27,7 @@ export const NavMenu = () => {
             </li>
             <li>
               <a>Settings</a>
-            </li>
+            </li> */}
             <li>
               <a onClick={() => signOut()}>Logout</a>
             </li>
