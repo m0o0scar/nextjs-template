@@ -1,33 +1,57 @@
-import { useSession } from 'next-auth/react';
+'use client';
 
-import { LoginButton } from '@components/auth/LoginButton';
-import { Header } from '@components/commons/Header';
-import { NavMenu } from '@components/commons/NavMenu';
+import { useEffect, useRef, useState } from 'react';
 
-export default function Page() {
-  const { status } = useSession();
+export default function Home() {
+  const worker = useRef<Worker | null>(null);
+
+  const [result, setResult] = useState(null);
+  const [ready, setReady] = useState(false);
+
+  const classify = (text: string) => worker.current?.postMessage({ text });
+
+  const onMessageReceived = (e: any) => {
+    switch (e.data.status) {
+      case 'initiate':
+        setReady(false);
+        break;
+      case 'ready':
+        setReady(true);
+        break;
+      case 'complete':
+        setResult(e.data.output[0]);
+        break;
+    }
+  };
+
+  useEffect(() => {
+    if (!worker.current) {
+      console.log('creating worker ...');
+      worker.current = new Worker(new URL('./workers/worker.ts', import.meta.url), {
+        type: 'module',
+      });
+    }
+
+    // Attach the callback function as an event listener.
+    worker.current.addEventListener('message', onMessageReceived);
+
+    // Define a cleanup function for when the component is unmounted.
+    return () => worker.current!.removeEventListener('message', onMessageReceived);
+  }, []);
+
   return (
-    <>
-      <Header title="Hello World" emoji="😎" />
+    <div className="flex flex-col gap-4">
+      <div>
+        <input
+          type="text"
+          placeholder="Enter text here"
+          onChange={(e) => classify(e.target.value)}
+        />
+      </div>
 
-      {status === 'loading' && (
-        <div className="w-screen h-screen flex items-center justify-center">
-          <span className="loading loading-spinner"></span>
-        </div>
-      )}
+      <div>ready ? {String(ready)}</div>
 
-      {status === 'unauthenticated' && (
-        <div className="w-screen h-screen flex items-center justify-center">
-          <LoginButton />
-        </div>
-      )}
-
-      {status === 'authenticated' && (
-        <article className="prose max-w-full w-screen h-screen flex flex-col">
-          <NavMenu />
-          <div className="flex-1 p-4">Hello World</div>
-        </article>
-      )}
-    </>
+      {result && <div>{JSON.stringify(result, null, 2)}</div>}
+    </div>
   );
 }
