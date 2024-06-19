@@ -1,4 +1,5 @@
 import { useSession } from 'next-auth/react';
+import { toast } from 'react-toastify';
 
 import { LoginButton } from '@components/auth/LoginButton';
 import { Header } from '@components/commons/Header';
@@ -25,7 +26,12 @@ export default function Page() {
       {status === 'authenticated' && (
         <article className="prose max-w-full w-screen h-screen flex flex-col">
           <NavMenu />
-          <div className="flex-1 p-4">Hello World</div>
+          <div className="flex flex-row gap-2 items-center p-4">
+            <span>Hello World</span>
+            <button className="btn" onClick={() => toast('😂 Hello World')}>
+              Click me
+            </button>
+          </div>
         </article>
       )}
     </>
