@@ -1,3 +1,6 @@
+// if you want to protect all pages and api routes, just export default from next-auth
+// export { default } from 'next-auth/middleware';
+
 import { NextRequestWithAuth, withAuth } from 'next-auth/middleware';
 import { NextFetchEvent, NextResponse } from 'next/server';
 
