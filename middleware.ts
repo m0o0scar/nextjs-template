@@ -24,7 +24,7 @@ async function middleware(request: NextRequestWithAuth, event: NextFetchEvent) {
       case 'gemini': {
         const search = url.searchParams;
         search.set('key', process.env.GOOGLE_GENERATIVE_AI_API_KEY || '');
-        const destination = `https://generativelanguage.googleapis.com/v1beta/${path.join('/')}?${search.toString()}`;
+        const destination = `https://generativelanguage.googleapis.com/${path.join('/')}?${search.toString()}`;
         return NextResponse.rewrite(destination);
       }
 
