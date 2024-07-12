@@ -1,15 +1,24 @@
 import NextAuth, { NextAuthOptions, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import GoogleProvider from 'next-auth/providers/google';
+import { uniq } from 'lodash';
 
-const whitelistUsers = process.env.AUTH_WHITELIST_USERS?.split(',') || undefined;
-const whitelistDomains = process.env.AUTH_WHITELIST_DOMAINS?.split(',') || undefined;
-const { GOOGLE_CLIENT_ID = '', GOOGLE_CLIENT_SECRET = '' } = process.env;
+const {
+  GOOGLE_CLIENT_ID = '',
+  GOOGLE_CLIENT_SECRET = '',
+  GOOGLE_OAUTH_SCOPE = '',
+  AUTH_WHITELIST_USERS,
+  AUTH_WHITELIST_DOMAINS,
+} = process.env;
 
-const scopes = [
+const whitelistUsers = AUTH_WHITELIST_USERS?.split(',') || undefined;
+const whitelistDomains = AUTH_WHITELIST_DOMAINS?.split(',') || undefined;
+
+const scopes = uniq([
   'https://www.googleapis.com/auth/userinfo.email',
   'https://www.googleapis.com/auth/userinfo.profile',
-];
+  ...GOOGLE_OAUTH_SCOPE.split(',').map((s) => s.trim()),
+]).filter(Boolean);
 
 interface Tokens {
   access_token?: string;
@@ -85,7 +94,7 @@ export const authOptions: NextAuthOptions = {
           prompt: 'consent',
           access_type: 'offline',
           response_type: 'code',
-          scope: scopes.join(' '),
+          scope: scopes.join(','),
         },
       },
     }),

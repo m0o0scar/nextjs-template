@@ -29,18 +29,18 @@ export default function LLMTestPage() {
   }, [status]);
 
   return (
-    <div className="p-4">
-      {status === 'loading' && <p>Loading...</p>}
-      {status === 'unauthenticated' && <p>Please login.</p>}
+    <div className="p-4 w-screen h-screen flex flex-col items-center justify-center">
+      {status === 'loading' && <div>Loading...</div>}
+      {status === 'unauthenticated' && <div>Please login.</div>}
       {status === 'authenticated' && (
-        <p>
+        <div>
           {reply && (
             <>
               <b>{model.modelId}</b>: {reply}
             </>
           )}
           {!reply && 'Thinking ...'}
-        </p>
+        </div>
       )}
     </div>
   );
