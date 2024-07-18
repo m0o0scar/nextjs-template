@@ -94,7 +94,7 @@ export const authOptions: NextAuthOptions = {
           prompt: 'consent',
           access_type: 'offline',
           response_type: 'code',
-          scope: scopes.join(','),
+          scope: scopes.join(' '),
         },
       },
     }),
@@ -105,9 +105,12 @@ export const authOptions: NextAuthOptions = {
       if (!user.email || !account?.scope) return false;
 
       const domain = user.email.split('@')[1];
-      const noWhitelist = whitelistUsers === undefined && whitelistDomains === undefined;
-      const isWhitelistUser = whitelistUsers !== undefined && whitelistUsers.includes(user.email);
-      const isWhitelistDomain = whitelistDomains !== undefined && whitelistDomains.includes(domain);
+      const noWhitelist =
+        whitelistUsers === undefined && whitelistDomains === undefined;
+      const isWhitelistUser =
+        whitelistUsers !== undefined && whitelistUsers.includes(user.email);
+      const isWhitelistDomain =
+        whitelistDomains !== undefined && whitelistDomains.includes(domain);
       return noWhitelist || isWhitelistUser || isWhitelistDomain;
     },
 
@@ -142,7 +145,11 @@ export const authOptions: NextAuthOptions = {
         accessToken = '',
         refreshToken = '',
         scope = '',
-      } = token as { accessToken?: string; refreshToken?: string; scope?: string };
+      } = token as {
+        accessToken?: string;
+        refreshToken?: string;
+        scope?: string;
+      };
 
       // Make sure user has granted us all the required scopes, otherwise login should fail
       const grantedScopes = scope.split(' ');
